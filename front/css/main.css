@@ -1,0 +1,139 @@
+header {
+  display: inline;
+}
+
+body {
+  margin: 0;
+  font-family: "Ubuntu", sans-serif;
+}
+
+ul {
+  margin: 0;
+}
+
+.topnav {
+  justify-content: center;
+  background-color: #f7f7f7;
+  padding: 10;
+}
+.topnav li {
+  display: inline;
+}
+
+.topnav li a {
+  color: #000;
+  padding: 8px 16px;
+  display: inline-block;
+  text-decoration: none;
+}
+
+.topnav li a:hover {
+  padding: 8px 16px;
+  display: inline-block;
+  background-color: #838383;
+}
+
+.topnav h1 {
+  display: inline;
+  top: 21px;
+  right: 0;
+}
+
+.main {
+  background-color: #f7f7f7;
+}
+
+.logo {
+  padding: 10px;
+}
+
+ul.sidenav {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  width: 15%;
+  background-color: #f7f7f7;
+  position: fixed;
+  height: 100%;
+  overflow: auto;
+}
+
+ul.sidenav li a {
+  display: block;
+  color: #000;
+  padding: 8px 16px;
+  text-decoration: none;
+}
+
+ul.sidenav li a.active {
+  background-color: #5d9eff;
+  color: white;
+}
+
+ul.sidenav li a:hover:not(.active) {
+  background-color: #838383;
+  color: white;
+}
+
+div.content {
+  margin-left: 15%;
+  padding: 1px 16px;
+  height: 1000px;
+}
+
+@media screen and (max-width: 900px) {
+  ul.sidenav {
+    width: 100%;
+    height: auto;
+    position: relative;
+  }
+
+  ul.sidenav li a {
+    float: left;
+    padding: 15px;
+  }
+
+  div.content {
+    margin-left: 0;
+  }
+}
+
+@media screen and (max-width: 400px) {
+  ul.sidenav li a {
+    text-align: center;
+    float: none;
+  }
+}
+
+/*.sidebar {
+  height: 100%;
+  width: 200px;
+  background-color: #fff;
+  position: fixed !important;
+  z-index: 1;
+  overflow: auto;
+}
+
+.sidebar ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  width: 200px;
+  background-color: #f1f1f1;
+}
+
+.sidebar li a {
+  display: block;
+  color: #000;
+  padding: 8px 16px;
+  text-decoration: none;
+}
+
+/* Change the link color on hover */
+.sidebar li a:hover {
+  background-color: #555;
+  color: white;
+}
+*/ .div {
+  display: block;
+}

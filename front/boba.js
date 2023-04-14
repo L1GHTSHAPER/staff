@@ -1,0 +1,3 @@
+alertus = "biba";
+
+alert(alertus);
