@@ -1,28 +1,11 @@
 import mongoose from "mongoose";
 
-const ticketSchema = new mongoose.Schema({
-  date: {
-    type: Date,
-    default: Date.now,
-    required: true,
-  },
-
-  user: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
-    required: true,
-  },
-  
+const TicketSchema = new mongoose.Schema({
   status: {
     type: String,
     required: true,
     default: "open",
   },
-
-  /*category: {
-    type: String,
-    required: true,
-  }, */
 
   title: {
     type: String,
@@ -34,9 +17,31 @@ const ticketSchema = new mongoose.Schema({
     required: true,
   },
 
-  screenshot: {
-    type: String,
-    required: false,
+  date: {
+    type: Date,
+    default: Date.now,
+    required: true,
   },
-  
-});
+
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
+  },
+
+  attachmentURL: {
+    type: String,
+  },
+
+  /*category: {
+    type: String,
+    required: true,
+  }, */
+
+},
+{
+  timestamps: true,
+},
+);
+
+export default mongoose.model("Ticket", TicketSchema);

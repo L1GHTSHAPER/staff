@@ -1,15 +1,18 @@
 //import { error } from 'console';
 //import { request } from 'http';
 import express from "express";
-import jwt from "jsonwebtoken";
-import bcrypt from "bcrypt";
+
 import mongoose from "mongoose";
-import { validationResult } from "express-validator";
 
-import { registerValidation } from "./validations/auth.js";
+import { registerValidation } from "./validations.js";
+import { loginValidation } from "./validations.js";
+import { ticketCreateValidation } from "./validations.js";
 
-import UserModel from "./models/user.js";
+import TicketModel from "./models/ticket.js";
 import checkAuth from "./utils/checkAuth.js";
+
+import * as UserController from "./controllers/UserController.js";
+import * as TicketController from "./controllers/TicketController.js";
 
 mongoose
   .connect(
@@ -22,116 +25,63 @@ const app = express();
 
 app.use(express.json());
 
-app.post("/auth/login", async (req, res) => {
-  try {
-    const user = await UserModel.findOne({ email: req.body.email });
-    if (!user) {
-      return res.status(404).json({
-        message: "Не удалось найти пользователя",
-      });
-    }
+app.post("/auth/login", loginValidation, UserController.login);
+app.post("/auth/register", registerValidation, UserController.register);
+app.get("/auth/me", checkAuth, UserController.getMe);
 
-    const isValidPass = await bcrypt.compare(
-      req.body.password,
-      user._doc.passwordHash
-    );
+//app.get("/tickets", checkAuth, TicketController.getAll);
+//app.get("/tickets/:id", checkAuth, TicketController.getOne);
+app.post("/tickets", checkAuth, ticketCreateValidation, TicketController.create);
+//app.delete("/tickets", checkAuth, TicketController.getMe);
 
-    if (!isValidPass) {
-      return res.status(404).json({
-        message: "Неверный логин или пароль",
-      });
-    }
 
-    const token = jwt.sign(
-      {
-        _id: user._id,
-      },
-      "secret123",
-      {
-        expiresIn: "30d",
-      }
-    );
-    const { passwordHash, ...userData } = user._doc;
+//ticket api
 
-    res.json({
-      ...userData,
-      token,
-    });
-  } catch (err) {
-    res.status(500).json({
-      message: "Не удалось авторизоваться",
-    });
-  }
-});
-
-app.post("/auth/register", registerValidation, async (req, res) => {
+app.post("/tickets/create", checkAuth, async (req, res) => {
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json(errors.array());
     }
 
-    const password = req.body.password;
-    const salt = await bcrypt.genSalt(10);
-    const hash = await bcrypt.hash(password, salt);
-
-    const doc = new UserModel({
-      email: req.body.email,
-      fullName: req.body.fullName,
-      avatarUrl: req.body.avatarUrl,
-      passwordHash: hash,
+    const doc = new TicketModel({
+      userId: req.user._id,
+      username: req.body.username,
+      status: req.body.status,
+      title: req.body.title,
+      description: req.body.description,
+      attachment: req.body.attachment,
     });
 
-    const user = await doc.save();
+    const ticket = await doc.save();
 
-    const token = jwt.sign(
-      {
-        _id: user._id,
-      },
-      "secret123",
-      {
-        expiresIn: "30d",
-      }
-    );
-
-    const { passwordHash, ...userData } = user._doc;
-
+    const { _id, ...docData } = ticket._doc;
     res.json({
-      ...userData,
-      token,
+      _id,
+      ...docData,
     });
   } catch (err) {
     res.status(500).json({
-      message: "Не удалось зарегистрироваться",
+      message: "Не удалось создать тикет",
+      error: err.message,
     });
   }
 });
 
-app.get("/auth/me", checkAuth, (req, res) => {
+//app.get("/tickets/all", checkAuth, (req, res) => {});
+
+app.get("/tickets/all", async (req, res) => {
   try {
-    res.json(
-        {
-            success: true,
-        }
-    )
-  } catch (err) {}
+    const tickets = await ticketModel.find({ userId: req.user._id });
+    res.json({
+      tickets,
+    });
+  } catch (err) {
+    res.status(500).json({
+      message: "Не удалось получить тикеты",
+    });
+  }
 });
-
-//ticket api
-
-app.post("/tickets/create", checkAuth, (req, res) => {
-  try {
-    res.json(
-        {
-            success: true,
-        }
-    )
-  } catch (err) {}
-});
-
-app.get("/tickets/all", checkAuth, (req, res) => {});
-
-
 
 app.listen(4444, (err) => {
   if (err) {
