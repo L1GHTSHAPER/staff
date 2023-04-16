@@ -1,0 +1,18 @@
+.header {
+    background-color: slateblue;
+    color: white;
+    padding: 4px;
+}
+.workbench{
+    color:white !important;
+    font-size: 10px !important;
+}
+h1.workbench {
+    
+}
+.colorblue {
+    color: blue;
+}
+.ticket-closed {
+    background-color: lightgray;
+}

@@ -1,18 +1,16 @@
-//import { error } from 'console';
-//import { request } from 'http';
 import express from "express";
-
+import multer from "multer";
 import mongoose from "mongoose";
 
-import { registerValidation } from "./validations.js";
-import { loginValidation } from "./validations.js";
-import { ticketCreateValidation } from "./validations.js";
+import {
+  registerValidation,
+  loginValidation,
+  ticketCreateValidation,
+} from "./validations.js";
 
-import TicketModel from "./models/ticket.js";
-import checkAuth from "./utils/checkAuth.js";
+import { UserController, TicketController } from "./controllers/index.js";
 
-import * as UserController from "./controllers/UserController.js";
-import * as TicketController from "./controllers/TicketController.js";
+import { handleValidationErrors, checkAuth } from "./utils/index.js";
 
 mongoose
   .connect(
@@ -23,65 +21,52 @@ mongoose
 
 const app = express();
 
-app.use(express.json());
+const storage = multer.diskStorage({
+  destination: (_, __, cb) => {
+    cb(null, "uploads");
+  },
+  filename: (_, file, cb) => {
+    cb(null, file.originalname);
+  },
+});
 
-app.post("/auth/login", loginValidation, UserController.login);
-app.post("/auth/register", registerValidation, UserController.register);
+const upload = multer({ storage });
+
+app.use(express.json());
+app.use("/uploads", express.static("uploads"));
+
+//user api
+app.post(
+  "/auth/login",
+  loginValidation,
+  handleValidationErrors,
+  UserController.login
+);
+app.post(
+  "/auth/register",
+  registerValidation,
+  handleValidationErrors,
+  UserController.register
+);
 app.get("/auth/me", checkAuth, UserController.getMe);
 
-//app.get("/tickets", checkAuth, TicketController.getAll);
-//app.get("/tickets/:id", checkAuth, TicketController.getOne);
-app.post("/tickets", checkAuth, ticketCreateValidation, TicketController.create);
-//app.delete("/tickets", checkAuth, TicketController.getMe);
-
+app.post("/upload", checkAuth, upload.single("attachment"), (req, res) => {
+  res.json({
+    url: `/uploads/${req.file.filename}`,
+  });
+});
 
 //ticket api
-
-app.post("/tickets/create", checkAuth, async (req, res) => {
-  try {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json(errors.array());
-    }
-
-    const doc = new TicketModel({
-      userId: req.user._id,
-      username: req.body.username,
-      status: req.body.status,
-      title: req.body.title,
-      description: req.body.description,
-      attachment: req.body.attachment,
-    });
-
-    const ticket = await doc.save();
-
-    const { _id, ...docData } = ticket._doc;
-    res.json({
-      _id,
-      ...docData,
-    });
-  } catch (err) {
-    res.status(500).json({
-      message: "Не удалось создать тикет",
-      error: err.message,
-    });
-  }
-});
-
-//app.get("/tickets/all", checkAuth, (req, res) => {});
-
-app.get("/tickets/all", async (req, res) => {
-  try {
-    const tickets = await ticketModel.find({ userId: req.user._id });
-    res.json({
-      tickets,
-    });
-  } catch (err) {
-    res.status(500).json({
-      message: "Не удалось получить тикеты",
-    });
-  }
-});
+app.get("/tickets", checkAuth, TicketController.getAll);
+app.get("/tickets/:id", checkAuth, TicketController.getOne);
+app.post(
+  "/tickets",
+  checkAuth,
+  ticketCreateValidation,
+  handleValidationErrors,
+  TicketController.create
+);
+app.delete("/tickets/:id", checkAuth, TicketController.remove);
 
 app.listen(4444, (err) => {
   if (err) {
