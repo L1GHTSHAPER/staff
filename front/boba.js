@@ -1,3 +1,0 @@
-alertus = "biba";
-
-alert(alertus);

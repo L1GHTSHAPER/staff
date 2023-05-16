@@ -1,0 +1,64 @@
+.item {
+
+  border-radius: 10px;
+  background-color: #dee3ed;
+  font-size: large;
+
+  margin-bottom: 4px;
+  margin: auto;
+  
+  width: 75%;
+  
+  transition-duration: 0.3s;
+}
+.item:hover {
+  background-color: #bcbfff;
+}
+
+.title {
+    color: #000;
+}
+
+.description {
+    font-style: italic;
+    color: #000;
+}
+.status {
+    color: green;
+    font-style: oblique;
+
+    background-color:#f3f4ff;
+    border-radius: 5px;
+    padding: 1px;
+
+    float: inherit;
+
+    
+}
+
+ul {
+    margin: 0;
+    padding: 0;
+}
+
+.itemList {
+    padding: 4px;
+    margin: 5px;
+}
+
+li {
+  display: inline;
+  margin: 10px;
+  border-left: 1px #3f47ff;
+}
+
+h1 {
+  padding: 10;
+  margin: 10;
+  color: #3f47ff;
+}
+
+a {
+  color: #000;
+  display:block;
+}

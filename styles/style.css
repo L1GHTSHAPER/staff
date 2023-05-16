@@ -1,5 +1,5 @@
 .header {
-    background-color: slateblue;
+    background-color: slateblue !important;
     color: white;
     padding: 4px;
 }
@@ -7,9 +7,7 @@
     color:white !important;
     font-size: 10px !important;
 }
-h1.workbench {
-    
-}
+
 .colorblue {
     color: blue;
 }
