@@ -13,12 +13,14 @@ function Home() {
   useEffect(() => {
     const fetchData = async () => {
       const token =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NDYzZjU0MGQzOTgxMGU2NGQyZWM5OTciLCJpYXQiOjE2ODQyNzI0NDgsImV4cCI6MTY4Njg2NDQ0OH0.dXquNbI0AhPUkO-jl2qWXhRJhzbHr8Oj7TRem2BYzi4";
-      const response = await fetch("http://185.166.197.152:4444/tickets", {
-        Authorization: `Bearer ${token}`,
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NDY0MDQyNWJmYzhhOWVjNjEwOTFmOTIiLCJpYXQiOjE2ODQyNzYyNjEsImV4cCI6MTY4Njg2ODI2MX0.wRuL_E1tfgkIAr1KzwFSCnLRbBjd9nbxYGS-xJIbYRM";
+      
+        const response = await fetch("http://37.220.85.199:4444/tickets", {
+        "Authorization": `Bearer ${token}`,
         //"Access-Control-Allow-Origin":"*",
       });
       const data = await response.json();
+
       console.log(response);
 
       setTickets(data);
